@@ -37,6 +37,10 @@ import org.jspecify.annotations.Nullable;
 public class RateLimitException extends HiggsException {
 	private static final long serialVersionUID = -3211900572857834162L;
 
+	/**
+	 * The seconds to wait before retrying, as advertised by the {@code Retry-After} header, or
+	 * {@link #NO_RETRY_AFTER} if the response carried none.
+	 */
 	private final long retryAfter;
 
 	/**

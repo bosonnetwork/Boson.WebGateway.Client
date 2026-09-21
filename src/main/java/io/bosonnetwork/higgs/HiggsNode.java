@@ -174,6 +174,14 @@ public class HiggsNode implements Node {
 		this.running = new AtomicBoolean(false);
 	}
 
+	/**
+	 * Returns a one-line description of the gateway this node is bound to, for logs and
+	 * diagnostics: the gateway URL and peer id, plus the node id and the gateway version learned
+	 * from {@code /info} at {@link #start()} once available (the version reads {@code N/A} before
+	 * a successful start).
+	 *
+	 * @return the gateway description
+	 */
 	public String getGatewayInfo() {
 		return gatewayUrl + " @ " + gatewayPeerId +
 				(gatewayNodeId != null ? " @ " + gatewayNodeId : "") +
@@ -536,6 +544,20 @@ public class HiggsNode implements Node {
 		return ContextualFuture.of(future);
 	}
 
+	/**
+	 * Lists the values persisted by the acting user, page by page.
+	 * <p>
+	 * Where {@link #getValue(Id)} reads one value by id, this is the account view: every persistent
+	 * value the gateway holds for the user. A user with no stored values completes with an empty
+	 * page rather than a failure.
+	 *
+	 * @param page     the 1-based page index (must be {@code >= 1})
+	 * @param pageSize the number of items per page (must be {@code >= 1}; {@link Long#MAX_VALUE}
+	 *                 with {@code page} {@code 1} asks the gateway for everything unpaged)
+	 * @return a future completing with the requested page of values
+	 * @throws IllegalArgumentException if {@code page} or {@code pageSize} is less than 1
+	 * @throws IllegalStateException    if this node is not running
+	 */
 	public CompletableFuture<PaginatedResult<Value>> getAllValues(long page, long pageSize) {
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be >= 1");
@@ -637,6 +659,20 @@ public class HiggsNode implements Node {
 		return ContextualFuture.of(future);
 	}
 
+	/**
+	 * Lists the peer infos announced by the acting user, page by page.
+	 * <p>
+	 * Where {@link #getPeers(Id)} reads the replicas recorded under one peer id, this is the
+	 * account view: every persistent peer info the gateway holds for the user. A user with nothing
+	 * announced completes with an empty page rather than a failure.
+	 *
+	 * @param page     the 1-based page index (must be {@code >= 1})
+	 * @param pageSize the number of items per page (must be {@code >= 1}; {@link Long#MAX_VALUE}
+	 *                 with {@code page} {@code 1} asks the gateway for everything unpaged)
+	 * @return a future completing with the requested page of peer infos
+	 * @throws IllegalArgumentException if {@code page} or {@code pageSize} is less than 1
+	 * @throws IllegalStateException    if this node is not running
+	 */
 	public CompletableFuture<PaginatedResult<PeerInfo>> getAllPeers(long page, long pageSize) {
 		if (page <= 0)
 			throw new IllegalArgumentException("page must be >= 1");
