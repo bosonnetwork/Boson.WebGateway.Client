@@ -35,6 +35,10 @@ import org.jspecify.annotations.Nullable;
 public class ServiceBusyException extends HiggsException {
 	private static final long serialVersionUID = 8827096145592301274L;
 
+	/**
+	 * The seconds to wait before retrying, as advertised by the {@code Retry-After} header, or
+	 * {@link #NO_RETRY_AFTER} if the response carried none.
+	 */
 	private final long retryAfter;
 
 	/**

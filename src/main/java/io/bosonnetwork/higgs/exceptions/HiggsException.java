@@ -71,6 +71,7 @@ public class HiggsException extends BosonException {
 	 */
 	public static final long NO_RETRY_AFTER = 0;
 
+	/** The HTTP status returned by the gateway, or {@link #NO_HTTP_STATUS} if the failure had no response. */
 	private final int status;
 
 	/**
