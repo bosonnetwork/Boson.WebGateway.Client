@@ -867,7 +867,10 @@ public class HiggsNode implements Node {
 	// gateway's own rights itself.
 	private Future<HttpResponse<Buffer>> sendAuthenticated(HttpRequest<Buffer> request,
 			Function<HttpRequest<Buffer>, Future<HttpResponse<Buffer>>> send) {
-		return tokens.token().compose(token -> send.apply(request.bearerTokenAuthentication(token))
+		// Issued from a Vert.x thread, where the host lookup may block: see
+		// ContextualFuture.callOnVertxThread.
+		return ContextualFuture.callOnVertxThread(vertx, () -> tokens.token()
+				.compose(token -> send.apply(request.bearerTokenAuthentication(token))
 				.compose(res -> {
 					// The date of the refusal is how the token source learns that our clock, not our
 					// key, is what the gateway objected to.
@@ -876,7 +879,7 @@ public class HiggsNode implements Node {
 						return Future.succeededFuture(res);
 
 					return tokens.token().compose(fresh -> send.apply(request.bearerTokenAuthentication(fresh)));
-				}));
+				})));
 	}
 
 	private HiggsException wrapErrorResponseToException(HttpResponse<Buffer> res) {
