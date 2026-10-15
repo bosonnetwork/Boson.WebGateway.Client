@@ -67,7 +67,7 @@ public class GatewayBasePathTests {
 								.end(new JsonObject()
 										.put("peerId", peerId.toString())
 										.put("nodeId", nodeId.toString())
-										.put("version", "Orca/1")
+										.put("version", "Orca/2")
 										.encode());
 					else
 						req.response().setStatusCode(404).end("Not Found");
